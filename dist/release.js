@@ -67,7 +67,7 @@ async function resolveIssueIds(issueIds) {
     let token = undefined;
     for (let i = 0; i < localStorage.length; i++) {
         let key = localStorage.key(i);
-        if (key.endsWith('-token') --inline----inline-- !key.startsWith('0-0-0-0')) {
+        if (key.endsWith('-token') && !key.startsWith('0-0-0-0')) {
             token = JSON.parse(localStorage.getItem(key))["accessToken"];
             break;
         }
@@ -131,9 +131,9 @@ function generateIssueLine(priority, issueNumber, string, color, backgroundColor
     const paddingRight = ''
 
     return `\
-<span style="font-size: 14pt; font-family: 'Roboto', sans-serif; color: rgb(255, 255, 255); background-color: ${backgroundColor}; vertical-align: baseline;">--inline--nbsp;</span>\
+<span style="font-size: 14pt; font-family: 'Roboto', sans-serif; color: rgb(255, 255, 255); background-color: ${backgroundColor}; vertical-align: baseline;">&nbsp;</span>\
 <span style="font-size: 14pt; font-family: 'Roboto Mono', monospace; color: ${color}; background-color: ${backgroundColor}; vertical-align: baseline;">${priority}</span>\
-<span style="font-size: 14pt; font-family: 'Roboto', sans-serif; color: rgb(255, 255, 255); background-color: ${backgroundColor}; vertical-align: baseline;">--inline--nbsp;</span>\
+<span style="font-size: 14pt; font-family: 'Roboto', sans-serif; color: rgb(255, 255, 255); background-color: ${backgroundColor}; vertical-align: baseline;">&nbsp;</span>\
 <span style="font-size: 14pt; font-family: 'Roboto', sans-serif; color: rgb(255, 255, 255); vertical-align: baseline;"> </span>\
 <span style="font-size: 14pt; font-family: 'Roboto Mono', monospace; color: rgb(74, 195, 184); text-decoration-skip-ink: none; vertical-align: baseline;">${paddingLeft}</span>\
 <a href="https://youtrack.acc.si/issue/${issueNumber}" style="text-decoration-line: none;">\
@@ -150,7 +150,7 @@ function generateIssueLine(priority, issueNumber, string, color, backgroundColor
 //console.log(`</p>`);function registerShortcuts() {
     // register alt+c keyboard shortcut
     document.addEventListener('keydown', function (event) {
-        if (event.altKey --inline----inline-- event.key === 'c') {
+        if (event.altKey && event.key === 'c') {
             let issues = getSelectedIssues();
             if (!issues.length) {
                 console.log('%cNo issue(s) found', 'color: red; 16px; font-weight: bold;');
