@@ -7,4 +7,4 @@ tampermonkey=$(<build/tampermonkey.prod.js)
 tampermonkey=${tampermonkey//--inline--/"$functions
 $main"}
 mkdir -p dist
-echo "$tampermonkey" > dist/dist.js
+echo "$tampermonkey" > dist/dist2.js
