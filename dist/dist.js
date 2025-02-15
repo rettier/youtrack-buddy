@@ -147,7 +147,8 @@ function generateIssueLine(priority, issueNumber, string, color, backgroundColor
 //console.log(`<p dir="ltr" style="line-height:1.1;margin-top:0pt;margin-bottom:12pt;">`);
 //console.log(generateTestModule('S', 'CRM-123', 'This is a test error message'));
 //console.log(generateTestModule('L', 'OM-1234', 'This is a test error message'));
-//console.log(`</p>`);function registerShortcuts() {
+//console.log(`</p>`);
+function registerShortcuts() {
     // register alt+c keyboard shortcut
     document.addEventListener('keydown', function (event) {
         if (event.altKey && event.key === 'c') {
