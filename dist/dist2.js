@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Youtrack Buddy
 // @namespace    http://acc.si/
-// @version      2025-02-13
+// @version      2025-02-17
 // @description  A tool for youtrack
 // @author       Arivo
 // @match        https://youtrack.acc.si/*
