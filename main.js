@@ -20,7 +20,7 @@ function registerShortcuts() {
                     return aPriority - bPriority;
                 });
 
-                let issueHtml = issues.map(issue => generateIssueLine(issue.priority, issue.id, issue.summary, issue.color, issue.background)).join('<br>');
+                let issueHtml = issues.map(issue => generateIssueLine(issue)).join('<br>');
                 if (issues.length > 1) {
                     let pStart = `<p dir="ltr" style="line-height:1.15;margin-top:0pt;margin-bottom:12pt;">`;
                     let pEnd = '</p>';

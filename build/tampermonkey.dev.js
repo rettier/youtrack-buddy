@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Youtrack Buddy
+// @name         Youtrack Buddy (Dev)
 // @namespace    http://acc.si/
 // @version      2025-02-13
 // @description  A tool for youtrack

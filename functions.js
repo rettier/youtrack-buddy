@@ -59,8 +59,8 @@ async function resolveIssueIds(issueIds) {
         }
     }
     let apiCalls = [];
-    for(let id of issueIds) {
-        apiCalls.push(fetch(`/api/issues/${id}?fields=idReadable,summary,fields(name,value(name,color(foreground,background)))`,
+    for (let id of issueIds) {
+        apiCalls.push(fetch(`/api/issues/${id}?fields=idReadable,summary,tags(name,color(background)),fields(name,value(name,color(foreground,background)))`,
             {
                 method: 'GET',
                 headers: {
@@ -77,7 +77,10 @@ async function resolveIssueIds(issueIds) {
 
     let result = [];
     for (let issue of data) {
-        let convertedIssue = {id: issue.idReadable, summary: issue.summary.trim()};
+        let convertedIssue = {
+            id: issue.idReadable, summary: issue.summary.trim(),
+            tags: issue.tags.map(x => ({name: x.name, color: x.color.background}))
+        };
         for (let field of issue.fields) {
             if (field.name === "Priority") {
                 convertedIssue.priority = (field.value.name || "?")[0].toLocaleUpperCase();
@@ -109,24 +112,30 @@ function getSelectedIssues() {
     return [];
 }
 
-function generateIssueLine(priority, issueNumber, string, color, backgroundColor) {
-    const prefix = issueNumber.split('-')[0];
-    const number = issueNumber.split('-')[1];
-
+function generateIssueLine({priority, id, summary, color, background, tags}) {
     const paddingLeft = '';
     const paddingRight = ''
 
+    let tagsString = "";
+    for (let i = 0; i < tags.length; i++) {
+        let tag = tags[i];
+        let comma = i < (tags.length - 1) ? ', ' : '';
+        let first = i === 0 ? ' ' : '';
+        tagsString += `<span style="font-size: 14pt; font-family: Roboto, sans-serif; color: ${tag.color}; font-weight: 700; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; font-variant-emoji: normal; vertical-align: baseline; white-space-collapse: preserve;">\
+<span style="font-size:0.6em;vertical-align:super;">${first}${tag.name}${comma}</span></span>`
+    }
+
     return `\
-<span style="font-size: 14pt; font-family: 'Roboto', sans-serif; color: rgb(255, 255, 255); background-color: ${backgroundColor}; vertical-align: baseline;">&nbsp;</span>\
-<span style="font-size: 14pt; font-family: 'Roboto Mono', monospace; color: ${color}; background-color: ${backgroundColor}; vertical-align: baseline;">${priority}</span>\
-<span style="font-size: 14pt; font-family: 'Roboto', sans-serif; color: rgb(255, 255, 255); background-color: ${backgroundColor}; vertical-align: baseline;">&nbsp;</span>\
+<span style="font-size: 14pt; font-family: 'Roboto', sans-serif; color: rgb(255, 255, 255); background-color: ${background}; vertical-align: baseline;">&nbsp;</span>\
+<span style="font-size: 14pt; font-family: 'Roboto Mono', monospace; color: ${color}; background-color: ${background}; vertical-align: baseline;">${priority}</span>\
+<span style="font-size: 14pt; font-family: 'Roboto', sans-serif; color: rgb(255, 255, 255); background-color: ${background}; vertical-align: baseline;">&nbsp;</span>\
 <span style="font-size: 14pt; font-family: 'Roboto', sans-serif; color: rgb(255, 255, 255); vertical-align: baseline;"> </span>\
 <span style="font-size: 14pt; font-family: 'Roboto Mono', monospace; color: rgb(74, 195, 184); text-decoration-skip-ink: none; vertical-align: baseline;">${paddingLeft}</span>\
-<a href="https://youtrack.acc.si/issue/${issueNumber}" style="text-decoration-line: none;">\
-<span style="font-size: 14pt; font-family: 'Roboto Mono', monospace; color: rgb(74, 195, 184); text-decoration-line: underline; text-decoration-skip-ink: none; vertical-align: baseline;">${issueNumber}</span>\
+<a href="https://youtrack.acc.si/issue/${id}" style="text-decoration-line: none;">\
+<span style="font-size: 14pt; font-family: 'Roboto Mono', monospace; color: rgb(74, 195, 184); text-decoration-line: underline; text-decoration-skip-ink: none; vertical-align: baseline;">${id}</span>\
 </a>\
 <span style="font-size: 14pt; font-family: 'Roboto Mono', monospace; color: rgb(74, 195, 184); text-decoration-skip-ink: none; vertical-align: baseline;">${paddingRight}</span>\
-<span style="font-size: 14pt; font-family: 'Roboto', sans-serif; color: rgb(255, 255, 255); vertical-align: baseline;"> ${string}</span>\
+<span style="font-size: 14pt; font-family: 'Roboto', sans-serif; color: rgb(255, 255, 255); vertical-align: baseline;"> ${summary}</span>${tagsString}\
 `;
 }
 
