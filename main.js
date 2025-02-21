@@ -9,17 +9,7 @@ function registerShortcuts() {
             }
 
             resolveIssueIds(issues).then(issues => {
-                // sort by known priorities, then by id
-                let priorities = ['1', 'S', '2', 'H', 'M', '3', 'N', '4', 'L'];
-                issues.sort((a, b) => {
-                    let aPriority = priorities.indexOf(a.priority);
-                    let bPriority = priorities.indexOf(b.priority);
-                    if (aPriority === bPriority) {
-                        return a.id.localeCompare(b.id);
-                    }
-                    return aPriority - bPriority;
-                });
-
+                sortIssuesByPriority(issues);
                 let issueHtml = issues.map(issue => generateIssueLine(issue)).join('<br>');
                 if (issues.length > 1) {
                     let pStart = `<p dir="ltr" style="line-height:1.15;margin-top:0pt;margin-bottom:12pt;">`;
@@ -28,6 +18,7 @@ function registerShortcuts() {
                 }
 
                 GM_setClipboard(issueHtml, 'html');
+                spawnPopup(`Copied ${issues.length} issue(s) to clipboard`);
             });
         }
     });

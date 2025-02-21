@@ -11,7 +11,7 @@ function _getIssueIdFromDetailPage() {
     }
 }
 
-function getIssueIdFromIssueList() {
+function _getIssueIdFromIssueList() {
     // class yt-issue and .selected or .focused
     let idsSelected = [];
     let idsFocused = [];
@@ -30,7 +30,7 @@ function getIssueIdFromIssueList() {
     return idsSelected.length ? idsSelected : idsFocused;
 }
 
-function getIssueIdFromAgileBoardCard() {
+function _getIssueIdFromAgileBoardCard() {
     let idsSelected = [];
     let idsFocused = [];
 
@@ -99,17 +99,57 @@ function getSelectedIssues() {
         return [issue];
     }
 
-    let issues = getIssueIdFromIssueList();
+    let issues = _getIssueIdFromIssueList();
     if (issues.length) {
         return issues;
     }
 
-    issues = getIssueIdFromAgileBoardCard();
+    issues = _getIssueIdFromAgileBoardCard();
     if (issues.length) {
         return issues;
     }
 
     return [];
+}
+
+let _lastPopup = undefined;
+let _lastPopupTimeout = undefined;
+
+function spawnPopup(message) {
+    // a popup bottom right with the message
+    let popupHtml = `
+<div style="position: fixed; bottom: 0; right: 0; background-color: #333; color: #fff; padding: 10px; border-radius: 5px; margin: 10px;">
+    <span style="font-size: 14pt; font-family: 'Roboto', sans-serif; color: rgb(255, 255, 255); vertical-align: baseline;">${message}</span>
+</div>
+`;
+
+    if (_lastPopup) {
+        _lastPopup.remove();
+        clearTimeout(_lastPopupTimeout);
+    }
+
+    let popup = $(popupHtml);
+    $("body").append(popup);
+
+    _lastPopup = popup;
+    _lastPopupTimeout = setTimeout(() => {
+        _lastPopupTimeout = undefined;
+        _lastPopup = undefined;
+        popup.remove();
+    }, 2000);
+}
+
+function sortIssuesByPriority(issues) {
+    // sort by known priorities, then by id
+    let priorities = ['1', 'S', '2', 'H', 'M', '3', 'N', '4', 'L'];
+    issues.sort((a, b) => {
+        let aPriority = priorities.indexOf(a.priority);
+        let bPriority = priorities.indexOf(b.priority);
+        if (aPriority === bPriority) {
+            return a.id.localeCompare(b.id);
+        }
+        return aPriority - bPriority;
+    });
 }
 
 function generateIssueLine({priority, id, summary, color, background, tags}) {
