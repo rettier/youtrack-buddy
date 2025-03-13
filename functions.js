@@ -16,14 +16,21 @@ function _getIssueIdFromIssueList() {
     let idsSelected = [];
     let idsFocused = [];
 
-    $(".yt-issue.selected, .yt-issue.focused").each(function (index) {
-        let id = $(this).find(".yt-issue-id").text();
-        if (!id || !id.length)
+    // css selector sselecting ticketListWrapper__.*
+    let ticketList = $('[class^="ticketListWrapper__"], [class*=" ticketListWrapper__"]');
+
+    $(ticketList).find('[class^="outerWrapper__"], [class*=" outerWrapper__"]').each(function (index) {
+        let el = $(this);
+        let ticketId = el.find('[data-test~="ticket-id"]').text();
+        if (!ticketId || !ticketId.length)
             return;
-        if ($(this).hasClass("selected")) {
-            idsSelected.push(id);
-        } else {
-            idsFocused.push(id);
+
+        let isSelected = el.is('[class^="selectedWrapper__"], [class*=" selectedWrapper__"]');
+        let isFocused = el.is('[class^="focusedWrapper__"], [class*=" focusedWrapper__"]');
+        if (isSelected) {
+            idsSelected.push(ticketId);
+        } else if (isFocused) {
+            idsFocused.push(ticketId);
         }
     });
 
@@ -118,7 +125,7 @@ let _lastPopupTimeout = undefined;
 function spawnPopup(message) {
     // a popup bottom right with the message
     let popupHtml = `
-<div style="position: fixed; bottom: 0; right: 0; background-color: #333; color: #fff; padding: 10px; border-radius: 5px; margin: 10px;">
+<div style="z-index: 1000; position: fixed; bottom: 0; right: 0; background-color: #333; color: #fff; padding: 10px; border-radius: 5px; margin: 10px;">
     <span style="font-size: 14pt; font-family: 'Roboto', sans-serif; color: rgb(255, 255, 255); vertical-align: baseline;">${message}</span>
 </div>
 `;
